@@ -74,7 +74,7 @@ def generatesql(gselect, gfrom, gwhere):
 #
 #     DATABASEURI = "postgresql://biliris:foobar@104.196.18.7/w4111"
 #
-DATABASEURI = "postgresql://user:password@104.196.18.7/w4111"
+DATABASEURI = "postgresql://tw2579:6846@104.196.18.7/w4111"
 
 
 #
@@ -105,7 +105,7 @@ def before_request():
   try:
     g.conn = engine.connect()
   except:
-    print "uh oh, problem connecting to database"
+    print("uh oh, problem connecting to database")
     import traceback; traceback.print_exc()
     g.conn = None
 
@@ -147,16 +147,26 @@ def index():
   """
 
   # DEBUG: this is debugging code to see what request looks like
-  print request.args
+  print(request.args)
 
 
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
+  cursor = g.conn.execute("""select c0.course_id, c0.c_name from course c0 where c0.course_id <> 132302 and
+                              c0.course_id not in (select c7.course_id from course c7, prerequisite p5 where
+                              p5.course_id_pre = 132302 and p5.course_id_post = c7.course_id) and c0.course_id
+                              not in (select c3.course_id from course c1, course c2, course c3, prerequisite p1,
+                              prerequisite p2 where p1.course_id_pre = c1.course_id and p1.course_id_post =
+                              c2.course_id and p2.course_id_pre = c2.course_id and p2.course_id_post = c3.course_id and
+                              c1.course_id = 132301) and c0.course_id in (select c4.course_id from course c4, prerequisite
+                              p3 where c4.course_id = p3.course_id_post) and c0.course_id not in (select c6.course_id from
+                              course c5, course c6, prerequisite p4 where p4.course_id_pre = c5.course_id and
+                              p4.course_id_post = c6.course_id and c5.course_id not in (select c4.course_id from
+                              course c4, prerequisite p3 where c4.course_id = p3.course_id_post))""")
   names = []
   for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
+    names.append(result)  # can also be accessed using result[0]
   cursor.close()
 
   #
@@ -208,11 +218,100 @@ def another():
 
 
 # Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
+@app.route('/scientist', methods=['POST'])
+def scientist():
+  # name = request.form['name']
+  s = """select * from scientist"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+
+  #
+  # render_template looks in the templates/ folder for files.
+  # for example, the below file reads template/index.html
+  #
+  return render_template("index.html", **context)
+  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
+  # return redirect('/')
+
+# Example of adding new data to the database
+@app.route('/add2', methods=['POST'])
+def add2():
   name = request.form['name']
-  g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  return redirect('/')
+  name2 = request.form['name2']
+  s = """Select * FROM SCIENTIST WHERE s_name = '"""
+  s += name
+  s += """' and nationality <> '"""
+  s += name2
+  s += """'"""
+  print(s)
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+
+  #
+  # render_template looks in the templates/ folder for files.
+  # for example, the below file reads template/index.html
+  #
+  return render_template("another.html", **context)
+  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
+  # return redirect('/')
+
+# Example of adding new data to the database
+@app.route('/event_about_scientist', methods=['POST'])
+def event_about_scientist():
+  name = request.form['name']
+  s = """select * from scientist, regardto , event where s_name = '"""
+  s += name
+  s += """'"""
+  s += """ and regardto.person_id = scientist.person_id and regardto.event_id = event.event_id"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+
+  #
+  # render_template looks in the templates/ folder for files.
+  # for example, the below file reads template/index.html
+  #
+  return render_template("index.html", **context)
+  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
+  # return redirect('/')
+
+# Example of adding new data to the database
+@app.route('/add4', methods=['POST'])
+def add4():
+  name = request.form['name']
+  s = """select distinct theorem.k_name as knowledge, course.c_name as course, theorem.theorem_name as
+        theorem_name, reference.link_id, reference.link_name from reference, course, theorem,
+        about, cover where about.course_id = course.course_id and about.link_id = reference.link_id
+        and cover.course_id = course.course_id and cover.k_name = theorem.k_name and theorem.theorem_id = 2"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+
+  #
+  # render_template looks in the templates/ folder for files.
+  # for example, the below file reads template/index.html
+  #
+  return render_template("index.html", **context)
+  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
+  # return redirect('/')
 
 
 @app.route('/login')
@@ -243,7 +342,7 @@ if __name__ == "__main__":
     """
 
     HOST, PORT = host, port
-    print "running on %s:%d" % (HOST, PORT)
+    print("running on %s:%d" % (HOST, PORT))
     app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
 
 
