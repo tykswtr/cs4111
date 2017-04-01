@@ -74,7 +74,7 @@ def generatesql(gselect, gfrom, gwhere):
 #
 #     DATABASEURI = "postgresql://biliris:foobar@104.196.18.7/w4111"
 #
-DATABASEURI = "postgresql://user:password@104.196.18.7/w4111"
+DATABASEURI = "postgresql://tw2579:6846@104.196.18.7/w4111"
 
 
 #
