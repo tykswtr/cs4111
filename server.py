@@ -211,10 +211,7 @@ def index():
 #
 # Notice that the function name is another() rather than index()
 # The functions for each app.route need to have different names
-#
-@app.route('/main')
-def another():
-  return render_template("index.html")
+
 
 
 # Example of adding new data to the database
@@ -297,14 +294,9 @@ def event():
   context = dict(data=names)
   return render_template("event.html", **context)
 
-# Example of adding new data to the database
-@app.route('/event_about_scientist', methods=['POST'])
-def event_about_scientist():
-  name = request.form['name']
-  s = """select * from scientist, regardto , event where s_name = '"""
-  s += name
-  s += """'"""
-  s += """ and regardto.person_id = scientist.person_id and regardto.event_id = event.event_id"""
+@app.route('/course')
+def course():
+  s = """Select * FROM Course"""
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
@@ -312,16 +304,94 @@ def event_about_scientist():
   cursor.close()
 
   context = dict(data=names)
+  return render_template("course.html", **context)
 
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("index.html", **context)
-  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  # return redirect('/')
+# Example of adding new data to the database
+@app.route('/event2scientist', methods=['POST'])
+def event2scientist():
+  name = request.form['name']
+  s = """select * from scientist, regardto , event where regardto.person_id = scientist.person_id and
+          regardto.event_id = event.event_id and s_name = '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
 
+  context = dict(data=names)
+  return render_template("scientist.html", **context)
 
+@app.route('/event2knowledge', methods=['POST'])
+def event2knowledge():
+  name = request.form['name']
+  s = """select knowledge from knowledge, relateto where relateto.k_name = knowledge.k_name and
+          relateto.event_id = '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("knowledge.html", **context)
+
+@app.route('/insert_course', methods=['POST'])
+def insert_course():
+  print('here')
+  c_id = request.form['c_id']
+  c_name = request.form['c_name']
+  k_name = request.form['k_name']
+
+  print('here')
+  s = """INSERT INTO course (course_id, c_name)  VALUES("""
+  s += c_id
+  s += """, '"""
+  s += c_name
+  s += """')"""
+  print(s)
+  g.conn.execute(s)
+  print('success')
+  s = """INSERT INTO cover (k_name, course_id) VALUES('"""
+  s += k_name
+  s += """', """
+  s += c_id
+  s += """)"""
+  print(s)
+  g.conn.execute(s)
+  print('success')
+  s = """select * from course"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("course.html", **context)
+
+@app.route('/insert_prerequisite', methods=['POST'])
+def insert_prerequisite():
+  c_id1 = request.form['c_id1']
+  c_id2 = request.form['c_id2']
+  s = """INSERT INTO prerequisite (course_id_pre, course_id_post)  VALUES("""
+  s += c_id1
+  s += """, """
+  s += c_id2
+  s += """)"""
+  cursor = g.conn.execute(s)
+  s = """select * from prerequisite"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("course.html", **context)
 
 
 @app.route('/login')
