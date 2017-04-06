@@ -1,0 +1,28 @@
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+<h1>Information about events</h1>
+
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+
+
+<form method="POST" action="/event2knowledge">
+    <p>Knowledge related to event: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
+</form>
+
+<p><a href="/">Back to main page</a></p>
+</body>
+
+
+</html>

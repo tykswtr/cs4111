@@ -1,0 +1,32 @@
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>Reference list according to the theorem</h1>
+
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+
+
+<form method="POST" action="/example3">
+    <p>Find all the references under one specific theorem. To be detailed, we should find the knowledge that contains
+        target theorem as well as the courses that is being covered, then print the references (links) with respect
+        to the courses.</p>
+    <p>No. of the theorem: <input type="text" name="name"> <input type="submit" value="search"> (ex. 3)</p>
+</form>
+
+
+<p><a href="/interesting_example">Back to the example page</a></p>
+</body>
+
+
+</html>

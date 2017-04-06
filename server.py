@@ -230,6 +230,19 @@ def theorem():
 
   return render_template("theorem.html", **context)
 
+@app.route('/event')
+def event():
+  s = """Select * FROM EVENT"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("event.html", **context)
+
+
 @app.route('/course2knowledge', methods = ['GET', 'POST'])
 def course2knowledge():
   name = request.form['name']
@@ -405,7 +418,7 @@ def theorem2knowledge():
 @app.route('/theorem2scientist', methods = ['GET', 'POST'])
 def theorem2scientist():
   name = request.form['name']
-  s = """select prove.person_id, scientist.s_name from scientist, prove where prove.person_id """
+  s = """select prove.person_id, scientist.s_name from scientist, prove where prove.person_id = scientist.person_id and prove.theorem_id = """
   s += name
   #s += """'"""
   print s
@@ -419,7 +432,200 @@ def theorem2scientist():
 
   context = dict(data=names)
 
+  return render_template("scientist.html", **context)
+
+@app.route('/theorem2axiom', methods = ['GET', 'POST'])
+def theorem2axiom():
+  name = request.form['name']
+  s = """select axiom_name from premise where theorem_id = """
+  s += name
+  #s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("axiom.html", **context)
+
+@app.route('/theoremContent', methods = ['GET', 'POST'])
+def theoremContent():
+  name = request.form['name']
+  s = """select theorem_content from theorem where theorem_id = """
+  s += name
+  #s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("theorem.html", **context)
+
+
+# Example of adding new data to the database
+@app.route('/interesting_example')
+def interesting_example():
+  return render_template("example.html")
+
+@app.route('/example1', methods=['POST'])
+def example1():
+  name = request.form['name']
+  s = """select c0.course_id, c0.c_name from course c0 where c0.course_id <> """
+  s += name
+  s += """ and
+                                c0.course_id not in (select c7.course_id from course c7, prerequisite p5 where
+                                p5.course_id_pre = """
+  s += name
+  s += """ and p5.course_id_post = c7.course_id) and c0.course_id
+                                not in (select c3.course_id from course c1, course c2, course c3, prerequisite p1,
+                                prerequisite p2 where p1.course_id_pre = c1.course_id and p1.course_id_post =
+                                c2.course_id and p2.course_id_pre = c2.course_id and p2.course_id_post = c3.course_id and
+                                c1.course_id = """
+  s += name
+  s += """) and c0.course_id in (select c4.course_id from course c4, prerequisite
+                                p3 where c4.course_id = p3.course_id_post) and c0.course_id not in (select c6.course_id from
+                                course c5, course c6, prerequisite p4 where p4.course_id_pre = c5.course_id and
+                                p4.course_id_post = c6.course_id and c5.course_id not in (select c4.course_id from
+                                course c4, prerequisite p3 where c4.course_id = p3.course_id_post))"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  context = dict(data=names)
+  return render_template("example1.html", **context)
+
+# Example of adding new data to the database
+@app.route('/example2', methods=['POST'])
+def example2():
+  s = """select event.event_name, scientist.s_name from scientist, event, regardto where regardto.event_id
+          = event.event_id and regardto.person_id = scientist.person_id and date_of_birth > '1800-01-01 00:00:00'
+          and nationality in (select nationality from scientist where date_of_birth > '1800-01-01 00:00:00'
+          group by nationality having count(*) = (select max(cnt) from (select count(*) as cnt from scientist
+          where date_of_birth > '1800-01-01 00:00:00' group by nationality) S))"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  context = dict(data=names)
+  return render_template("example2.html", **context)
+
+# Example of adding new data to the database
+@app.route('/example3', methods=['POST'])
+def example3():
+  name = request.form['name']
+  s = """select distinct theorem.theorem_name as
+        theorem_name, reference.link_name from reference, course, theorem,
+        about, cover where about.course_id = course.course_id and about.link_id = reference.link_id
+        and cover.course_id = course.course_id and cover.k_name = theorem.k_name and theorem.theorem_id = """
+  s += name
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("example3.html", **context)
+
+
+# Example of adding new data to the database
+@app.route('/event2scientist', methods=['POST'])
+def event2scientist():
+  name = request.form['name']
+  s = """select * from scientist, regardto , event where regardto.person_id = scientist.person_id and
+          regardto.event_id = event.event_id and s_name = '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("scientist.html", **context)
+
+@app.route('/event2knowledge', methods=['POST'])
+def event2knowledge():
+  name = request.form['name']
+  s = """select knowledge from knowledge, relateto where relateto.k_name = knowledge.k_name and
+          relateto.event_id = '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
   return render_template("knowledge.html", **context)
+
+@app.route('/insert_course', methods=['POST'])
+def insert_course():
+  c_id = request.form['c_id']
+  c_name = request.form['c_name']
+  k_name = request.form['k_name']
+
+  s = """INSERT INTO course (course_id, c_name)  VALUES("""
+  s += c_id
+  s += """, '"""
+  s += c_name
+  s += """')"""
+  g.conn.execute(s)
+  s = """INSERT INTO cover (k_name, course_id) VALUES('"""
+  s += k_name
+  s += """', """
+  s += c_id
+  s += """)"""
+  g.conn.execute(s)
+  s = """select * from course"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("course.html", **context)
+
+@app.route('/insert_prerequisite', methods=['POST'])
+def insert_prerequisite():
+  c_id_pre = request.form['c_id_pre']
+  c_id_post = request.form['c_id_post']
+  s = """INSERT INTO prerequisite (course_id_pre, course_id_post)  VALUES("""
+  s += c_id_pre
+  s += """, """
+  s += c_id_post
+  s += """)"""
+  g.conn.execute(s)
+  s = """select prerequisite.course_id_pre, course.c_name from prerequisite,
+        course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
+  s += c_id_post
+  # s += """'"""
+  cursor = g.conn.execute(s)
+  s = """select * from prerequisite"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("course.html", **context)
 @app.route('/another')
 def another():
   return render_template("event.html")
