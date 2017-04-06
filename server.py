@@ -212,58 +212,91 @@ def index():
 # Notice that the function name is another() rather than index()
 # The functions for each app.route need to have different names
 #
-@app.route('/another')
+@app.route('/main')
 def another():
-  return render_template("another.html")
+  return render_template("index.html")
 
 
 # Example of adding new data to the database
-@app.route('/scientist', methods=['POST'])
-def scientist():
-  # name = request.form['name']
-  s = """select * from scientist"""
+@app.route('/interesting_example')
+def interesting_example():
+  return render_template("example.html")
+
+@app.route('/example1', methods=['POST'])
+def example1():
+  name = request.form['name']
+  s = """select c0.course_id, c0.c_name from course c0 where c0.course_id <> """
+  s += name
+  s += """ and
+                                c0.course_id not in (select c7.course_id from course c7, prerequisite p5 where
+                                p5.course_id_pre = """
+  s += name
+  s += """ and p5.course_id_post = c7.course_id) and c0.course_id
+                                not in (select c3.course_id from course c1, course c2, course c3, prerequisite p1,
+                                prerequisite p2 where p1.course_id_pre = c1.course_id and p1.course_id_post =
+                                c2.course_id and p2.course_id_pre = c2.course_id and p2.course_id_post = c3.course_id and
+                                c1.course_id = """
+  s += name
+  s += """) and c0.course_id in (select c4.course_id from course c4, prerequisite
+                                p3 where c4.course_id = p3.course_id_post) and c0.course_id not in (select c6.course_id from
+                                course c5, course c6, prerequisite p4 where p4.course_id_pre = c5.course_id and
+                                p4.course_id_post = c6.course_id and c5.course_id not in (select c4.course_id from
+                                course c4, prerequisite p3 where c4.course_id = p3.course_id_post))"""
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-
   context = dict(data=names)
-
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("index.html", **context)
-  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  # return redirect('/')
+  return render_template("example1.html", **context)
 
 # Example of adding new data to the database
-@app.route('/add2', methods=['POST'])
-def add2():
-  name = request.form['name']
-  name2 = request.form['name2']
-  s = """Select * FROM SCIENTIST WHERE s_name = '"""
-  s += name
-  s += """' and nationality <> '"""
-  s += name2
-  s += """'"""
+@app.route('/example2', methods=['POST'])
+def example2():
+  s = """select event.event_name, scientist.s_name from scientist, event, regardto where regardto.event_id
+          = event.event_id and regardto.person_id = scientist.person_id and date_of_birth > '1800-01-01 00:00:00'
+          and nationality in (select nationality from scientist where date_of_birth > '1800-01-01 00:00:00'
+          group by nationality having count(*) = (select max(cnt) from (select count(*) as cnt from scientist
+          where date_of_birth > '1800-01-01 00:00:00' group by nationality) S))"""
   print(s)
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
+  context = dict(data=names)
+  return render_template("example2.html", **context)
+
+# Example of adding new data to the database
+@app.route('/example3', methods=['POST'])
+def example3():
+  name = request.form['name']
+  s = """select distinct theorem.theorem_name as
+        theorem_name, reference.link_name from reference, course, theorem,
+        about, cover where about.course_id = course.course_id and about.link_id = reference.link_id
+        and cover.course_id = course.course_id and cover.k_name = theorem.k_name and theorem.theorem_id = """
+  s += name
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(resuleventt)  # can also be accessed using result[0]
+  cursor.close()
 
   context = dict(data=names)
+  return render_template("example3.html", **context)
 
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("another.html", **context)
-  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  # return redirect('/')
+# Example of adding new data to the database
+@app.route('/event', methods=['POST'])
+def event():
+  s = """Select * FROM EVENT"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("event.html", **context)
 
 # Example of adding new data to the database
 @app.route('/event_about_scientist', methods=['POST'])
@@ -289,29 +322,7 @@ def event_about_scientist():
   # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
   # return redirect('/')
 
-# Example of adding new data to the database
-@app.route('/add4', methods=['POST'])
-def add4():
-  name = request.form['name']
-  s = """select distinct theorem.k_name as knowledge, course.c_name as course, theorem.theorem_name as
-        theorem_name, reference.link_id, reference.link_name from reference, course, theorem,
-        about, cover where about.course_id = course.course_id and about.link_id = reference.link_id
-        and cover.course_id = course.course_id and cover.k_name = theorem.k_name and theorem.theorem_id = 2"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
 
-  context = dict(data=names)
-
-  #
-  # render_template looks in the templates/ folder for files.
-  # for example, the below file reads template/index.html
-  #
-  return render_template("index.html", **context)
-  # g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  # return redirect('/')
 
 
 @app.route('/login')
