@@ -258,7 +258,6 @@ def example2():
           and nationality in (select nationality from scientist where date_of_birth > '1800-01-01 00:00:00'
           group by nationality having count(*) = (select max(cnt) from (select count(*) as cnt from scientist
           where date_of_birth > '1800-01-01 00:00:00' group by nationality) S))"""
-  print(s)
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
@@ -279,7 +278,7 @@ def example3():
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
-    names.append(resuleventt)  # can also be accessed using result[0]
+    names.append(result)  # can also be accessed using result[0]
   cursor.close()
 
   context = dict(data=names)
