@@ -152,6 +152,7 @@ def index():
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
+  print "a"
   return render_template("index.html")
 
 #
@@ -213,10 +214,39 @@ def reference():
 
   return render_template("reference.html", **context)
 
+@app.route('/event')
+def event():
+  s = """Select * FROM EVENT"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("event.html", **context)
+
+@app.route('/scientist')
+def scientist():
+  # name = request.form['name']
+  s = """select person_id, s_name from scientist"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("scientist.html", **context)
+
 @app.route('/theorem')
 def theorem():
   # name = request.form['name']
-  s = """select * from theorem"""
+  s = """select theorem_id, theorem_name from theorem"""
   print s
   cursor = g.conn.execute(s)
 
@@ -230,17 +260,23 @@ def theorem():
 
   return render_template("theorem.html", **context)
 
-@app.route('/event')
-def event():
-  s = """Select * FROM EVENT"""
+
+@app.route('/axiom')
+def axiom():
+  # name = request.form['name']
+  s = """select * from axiom"""
+  print s
   cursor = g.conn.execute(s)
+
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
+  print names
 
   context = dict(data=names)
-  return render_template("event.html", **context)
+
+  return render_template("axiom.html", **context)
 
 
 @app.route('/course2knowledge', methods = ['GET', 'POST'])
@@ -284,7 +320,7 @@ def course2course():
 @app.route('/course2reference', methods = ['GET', 'POST'])
 def course2reference():
   name = request.form['name']
-  s = """select about.link_id from about where about.course_id = """
+  s = """select about.link_id,link.link_name from about, link where about.linke_id = link.link_id and about.course_id = """
   s += name
   # s += """'"""
   print s
@@ -341,7 +377,7 @@ def knowledge2theorem():
 @app.route('/knowledge2course', methods = ['GET', 'POST'])
 def knowledge2course():
   name = request.form['name']
-  s = """select cover.course_id, course.c_name where cover.course_id =course.c_name and cover.k_name = '"""
+  s = """select cover.course_id, course.c_name where cover.course_id =course.course_id and cover.k_name = '"""
   s += name
   s += """'"""
   print s
@@ -472,6 +508,116 @@ def theoremContent():
 
   return render_template("theorem.html", **context)
 
+@app.route('/event2scientist', methods=['POST'])
+def event2scientist():
+  name = request.form['name']
+  s = """select scientist.person_id, scientist.s_name from scientist, regardto, event where regardto.person_id = scientist.person_id and
+          regardto.event_id = event.event_id and s_name = '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("scientist.html", **context)
+
+@app.route('/event2knowledge', methods=['POST'])
+def event2knowledge():
+  name = request.form['name']
+  s = """select knowledge from knowledge, relateto where relateto.k_name = knowledge.k_name and
+          relateto.event_id = """
+  s += name
+  # s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("knowledge.html", **context)
+
+@app.route('/scientist2event', methods=['POST'])
+def scientist2event():
+  name = request.form['name']
+  s = """select regardto.event_id, event.event_name from regardto, event where regardto.event_id = event.event_id and
+          regardto.person_id= """
+  s += name
+  # s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("event.html", **context)
+
+@app.route('/scientist2theorem', methods=['POST'])
+def scientist2theorem():
+  name = request.form['name']
+  s = """select prove.theorem_id, theorem.theorem_name from prove, theorem where prove.theorem_id = theorem.theorem_id and
+          prove.person_id= """
+  s += name
+  # s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("theorem.html", **context)
+
+@app.route('/scientist2axiom', methods=['POST'])
+def scientist2axiom():
+  name = request.form['name']
+  s = """select axiom_name from propose where propose.person_id= """
+  s += name
+  # s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("axiom.html", **context)
+
+@app.route('/axiom2theorem', methods=['POST'])
+def axiom2theorem():
+  name = request.form['name']
+  s = """select premise.theorem_id, theorem.theorem_name from premise, theorem where premise.theorem_id = theorem.theorem_id and
+          premise.axiom_name= '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("theorem.html", **context)
+
+@app.route('/axiom2scientist', methods=['POST'])
+def axiom2scientist():
+  name = request.form['name']
+  s = """select propose.person_id, scientist.s_name from propose, scientist where propose.person_id = scientist.person_id and
+          propose.axiom_name= '"""
+  s += name
+  s += """'"""
+  cursor = g.conn.execute(s)
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+  return render_template("scientist.html", **context)
 
 # Example of adding new data to the database
 @app.route('/interesting_example')
@@ -541,39 +687,6 @@ def example3():
   return render_template("example3.html", **context)
 
 
-# Example of adding new data to the database
-@app.route('/event2scientist', methods=['POST'])
-def event2scientist():
-  name = request.form['name']
-  s = """select * from scientist, regardto , event where regardto.person_id = scientist.person_id and
-          regardto.event_id = event.event_id and s_name = '"""
-  s += name
-  s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-
-  context = dict(data=names)
-  return render_template("scientist.html", **context)
-
-@app.route('/event2knowledge', methods=['POST'])
-def event2knowledge():
-  name = request.form['name']
-  s = """select knowledge from knowledge, relateto where relateto.k_name = knowledge.k_name and
-          relateto.event_id = '"""
-  s += name
-  s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-
-  context = dict(data=names)
-  return render_template("knowledge.html", **context)
-
 @app.route('/insert_course', methods=['POST'])
 def insert_course():
   c_id = request.form['c_id']
@@ -626,25 +739,6 @@ def insert_prerequisite():
 
   context = dict(data=names)
   return render_template("course.html", **context)
-@app.route('/another')
-def another():
-  return render_template("event.html")
-
-
-
-# Example of adding new data to the database
-@app.route('/add', methods=['POST'])
-def add():
-  name = request.form['name']
-  g.conn.execute('INSERT INTO test VALUES (NULL, ?)', name)
-  return redirect('/')
-
-
-@app.route('/login')
-def login():
-    abort(401)
-    this_is_never_executed()
-
 
 if __name__ == "__main__":
   import click
@@ -653,7 +747,7 @@ if __name__ == "__main__":
   @click.option('--debug', is_flag=True)
   @click.option('--threaded', is_flag=True)
   @click.argument('HOST', default='0.0.0.0')
-  @click.argument('PORT', default=8111, type=int)
+  @click.argument('PORT', default=8080, type=int)
   def run(debug, threaded, host, port):
     """
     This function handles command line parameters.

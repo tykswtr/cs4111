@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html>
+  <style>
+    body{
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
 
+
+<body>
+<h1>Scientist</h1>
+
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+
+
+<form method="POST" action="/scientist2event">
+    <p>Event regard to scientist: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
+</form>
+<form method="POST" action="/scientist2theorem">
+    <p>Theorem proved by scientist: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
+</form>
+
+<form method="POST" action="/scientist2axiom">
+    <p>Axiom proposed by scientist: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
+</form>
+<p><a href="/">Back to main page</a></p>
 </body>
+
+
 </html>

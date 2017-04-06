@@ -8,7 +8,7 @@
 
 
 <body>
-<h1>Information about events</h1>
+<h1>Event</h1>
 
   <div>
     {% for n in data %}
@@ -19,6 +19,9 @@
 
 <form method="POST" action="/event2knowledge">
     <p>Knowledge related to event: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
+</form>
+<form method="POST" action="/event2scientist">
+    <p>Scientist regard to event: <input type="text" name="name"><input type="submit" value="search"> (ex. 1)</p>
 </form>
 
 <p><a href="/">Back to main page</a></p>
