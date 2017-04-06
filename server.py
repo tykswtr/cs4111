@@ -23,47 +23,7 @@ from jinja2 import Template
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 
-def getresult(names, cursor):
-  row=[]
-  for result in cursor:
-    for cell in result:
-      rows.append(cell)
-    names.append(rows)
-    rows = []
-  cursor.close()
-  return names
 
-def generatesql(gselect, gfrom, gwhere):
-  gsql = "SELECT "
-  for i, tlist in enumerate(gselect):
-    if i!=len(gselect)-1:
-      gsql = gsql+tlist+","
-    else:
-      gsql = gsql+tlist
-  gsql += " FROM "
-
-  for i,tlist in enumerate(gfrom):
-    if i!=len(gfrom)-1:
-      gsql = gsql+tlist+","
-    else:
-      gsql = gsql+tlist
-  if not gwhere:
-    return gsql
-  gsql += " WHERE "
-  ct=0
-
-  for i, tlist in enumerate(gwhere):
-    if i!=0 and tlist and ct!=0:
-      gsql = gsql+" AND " +tlist
-      ct+=1
-    elif tlist and i==0:
-      gsql = gsql+tlist
-      ct+=1
-    elif tlist:
-      gsql = gsql+tlist
-      ct+=1
-  return gsql
-#
 # The following is a dummy URI that does not connect to a valid database. You will need to modify it to connect to your Part 2 database in order to use the data.
 #
 # XXX: The URI should be in the format of: 
@@ -74,7 +34,7 @@ def generatesql(gselect, gfrom, gwhere):
 #
 #     DATABASEURI = "postgresql://biliris:foobar@104.196.18.7/w4111"
 #
-DATABASEURI = "postgresql://user:password@104.196.18.7/w4111"
+DATABASEURI = "postgresql://tw2579:6846@104.196.18.7/w4111"
 
 
 #
@@ -147,17 +107,17 @@ def index():
   """
 
   # DEBUG: this is debugging code to see what request looks like
-  print request.args
+  # print request.args
 
 
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()
+  # cursor = g.conn.execute("SELECT name FROM test")
+  # names = []
+  # for result in cursor:
+  #   names.append(result['name'])  # can also be accessed using result[0]
+  # cursor.close()
 
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -185,14 +145,14 @@ def index():
   #     <div>{{n}}</div>
   #     {% endfor %}
   #
-  context = dict(data = names)
+  # context = dict(data = names)
 
 
   #
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html", **context)
+  return render_template("index.html")
 
 #
 # This is an example of a different path.  You can see it at:
@@ -202,9 +162,268 @@ def index():
 # Notice that the function name is another() rather than index()
 # The functions for each app.route need to have different names
 #
+@app.route('/course')
+def course():
+  # name = request.form['name']
+  s = """select * from course"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("course.html", **context)
+
+@app.route('/knowledge')
+def knowledge():
+  # name = request.form['name']
+  s = """select * from knowledge"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("knowledge.html", **context)
+
+@app.route('/reference')
+def reference():
+  # name = request.form['name']
+  s = """select link_id, link_name from reference"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("reference.html", **context)
+
+@app.route('/theorem')
+def theorem():
+  # name = request.form['name']
+  s = """select * from theorem"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("theorem.html", **context)
+
+@app.route('/course2knowledge', methods = ['GET', 'POST'])
+def course2knowledge():
+  name = request.form['name']
+  s = """select k_name from cover where cover.course_id = """
+  s += name
+  # s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("knowledge.html", **context)
+
+@app.route('/course2course', methods = ['GET', 'POST'])
+def course2course():
+  name = request.form['name']
+  s = """select prerequisite.course_id_pre, course.c_name from prerequisite, course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
+  s += name
+  # s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("course.html", **context)
+
+@app.route('/course2reference', methods = ['GET', 'POST'])
+def course2reference():
+  name = request.form['name']
+  s = """select about.link_id from about where about.course_id = """
+  s += name
+  # s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("reference.html", **context)
+
+@app.route('/knowledge2event', methods = ['GET', 'POST'])
+def knowledge2event():
+  name = request.form['name']
+  s = """select relateto.event_id, event.event_name from event, relateto where relateto.event_id = event.event_id and relateto.k_name ='"""
+  s += name
+  s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("event.html", **context)
+
+@app.route('/knowledge2theorem', methods = ['GET', 'POST'])
+def knowledge2theorem():
+  name = request.form['name']
+  s = """select theorem_id, theorem_name from theorem where k_name ='"""
+  s += name
+  s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("theorem.html", **context)
+
+@app.route('/knowledge2course', methods = ['GET', 'POST'])
+def knowledge2course():
+  name = request.form['name']
+  s = """select cover.course_id, course.c_name where cover.course_id =course.c_name and cover.k_name = '"""
+  s += name
+  s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("course.html", **context)
+
+@app.route('/knowledge2knowledge', methods = ['GET', 'POST'])
+def knowledge2knowledge():
+  name = request.form['name']
+  s = """select knowledge_sub from subordinate where knowledge_sup ='"""
+  s += name
+  s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("knowledge.html", **context)
+
+
+@app.route('/reference2course', methods = ['GET', 'POST'])
+def reference2course():
+  name = request.form['name']
+  s = """select about.couse_id, course.c_name from about where about.course_id =course.course_id and about.link_id = """
+  s += name
+  #s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("course.html", **context)
+
+@app.route('/theorem2knowledge', methods = ['GET', 'POST'])
+def theorem2knowledge():
+  name = request.form['name']
+  s = """select k_name from theorem where theorem_id = """
+  s += name
+  #s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("knowledge.html", **context)
+
+@app.route('/theorem2scientist', methods = ['GET', 'POST'])
+def theorem2scientist():
+  name = request.form['name']
+  s = """select prove.person_id, scientist.s_name from scientist, prove where prove.person_id """
+  s += name
+  #s += """'"""
+  print s
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+  print names
+
+  context = dict(data=names)
+
+  return render_template("knowledge.html", **context)
 @app.route('/another')
 def another():
-  return render_template("another.html")
+  return render_template("event.html")
+
 
 
 # Example of adding new data to the database
