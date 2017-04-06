@@ -306,6 +306,23 @@ def course():
   context = dict(data=names)
   return render_template("course.html", **context)
 
+@app.route('/course2course', methods = ['GET', 'POST'])
+def course2course():
+  name = request.form['name']
+  s = """select prerequisite.course_id_pre, course.c_name from prerequisite, course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
+  s += name
+  # s += """'"""
+  cursor = g.conn.execute(s)
+
+  names = []
+  for result in cursor:
+    names.append(result)  # can also be accessed using result[0]
+  cursor.close()
+
+  context = dict(data=names)
+
+  return render_template("course.html", **context)
+
 # Example of adding new data to the database
 @app.route('/event2scientist', methods=['POST'])
 def event2scientist():
@@ -341,28 +358,22 @@ def event2knowledge():
 
 @app.route('/insert_course', methods=['POST'])
 def insert_course():
-  print('here')
   c_id = request.form['c_id']
   c_name = request.form['c_name']
   k_name = request.form['k_name']
 
-  print('here')
   s = """INSERT INTO course (course_id, c_name)  VALUES("""
   s += c_id
   s += """, '"""
   s += c_name
   s += """')"""
-  print(s)
   g.conn.execute(s)
-  print('success')
   s = """INSERT INTO cover (k_name, course_id) VALUES('"""
   s += k_name
   s += """', """
   s += c_id
   s += """)"""
-  print(s)
   g.conn.execute(s)
-  print('success')
   s = """select * from course"""
   cursor = g.conn.execute(s)
   names = []
@@ -375,13 +386,18 @@ def insert_course():
 
 @app.route('/insert_prerequisite', methods=['POST'])
 def insert_prerequisite():
-  c_id1 = request.form['c_id1']
-  c_id2 = request.form['c_id2']
+  c_id_pre = request.form['c_id_pre']
+  c_id_post = request.form['c_id_post']
   s = """INSERT INTO prerequisite (course_id_pre, course_id_post)  VALUES("""
-  s += c_id1
+  s += c_id_pre
   s += """, """
-  s += c_id2
+  s += c_id_post
   s += """)"""
+  g.conn.execute(s)
+  s = """select prerequisite.course_id_pre, course.c_name from prerequisite,
+        course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
+  s += c_id_post
+  # s += """'"""
   cursor = g.conn.execute(s)
   s = """select * from prerequisite"""
   cursor = g.conn.execute(s)
