@@ -65,7 +65,7 @@ def before_request():
   try:
     g.conn = engine.connect()
   except:
-    print "uh oh, problem connecting to database"
+    # print "uh oh, problem connecting to database"
     import traceback; traceback.print_exc()
     g.conn = None
 
@@ -151,8 +151,7 @@ def index():
   #
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
-  #
-  print "a"
+  
   return render_template("index.html")
 
 #
@@ -167,14 +166,14 @@ def index():
 def course():
   # name = request.form['name']
   s = """select * from course"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -184,14 +183,14 @@ def course():
 def knowledge():
   # name = request.form['name']
   s = """select * from knowledge"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -201,14 +200,14 @@ def knowledge():
 def reference():
   # name = request.form['name']
   s = """select link_id, link_name from reference"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -230,14 +229,14 @@ def event():
 def scientist():
   # name = request.form['name']
   s = """select person_id, s_name from scientist"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -247,14 +246,14 @@ def scientist():
 def theorem():
   # name = request.form['name']
   s = """select theorem_id, theorem_name from theorem"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -265,14 +264,14 @@ def theorem():
 def axiom():
   # name = request.form['name']
   s = """select * from axiom"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -285,14 +284,14 @@ def course2knowledge():
   s = """select k_name from cover where cover.course_id = """
   s += name
   # s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -304,14 +303,14 @@ def course2course():
   s = """select prerequisite.course_id_pre, course.c_name from prerequisite, course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
   s += name
   # s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -323,14 +322,14 @@ def course2reference():
   s = """select about.link_id,link.link_name from about, link where about.linke_id = link.link_id and about.course_id = """
   s += name
   # s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -342,14 +341,14 @@ def knowledge2event():
   s = """select relateto.event_id, event.event_name from event, relateto where relateto.event_id = event.event_id and relateto.k_name ='"""
   s += name
   s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -361,14 +360,14 @@ def knowledge2theorem():
   s = """select theorem_id, theorem_name from theorem where k_name ='"""
   s += name
   s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -380,14 +379,14 @@ def knowledge2course():
   s = """select cover.course_id, course.c_name where cover.course_id =course.course_id and cover.k_name = '"""
   s += name
   s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -399,14 +398,14 @@ def knowledge2knowledge():
   s = """select knowledge_sub from subordinate where knowledge_sup ='"""
   s += name
   s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -419,14 +418,14 @@ def reference2course():
   s = """select about.couse_id, course.c_name from about where about.course_id =course.course_id and about.link_id = """
   s += name
   #s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -438,14 +437,14 @@ def theorem2knowledge():
   s = """select k_name from theorem where theorem_id = """
   s += name
   #s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -457,14 +456,14 @@ def theorem2scientist():
   s = """select prove.person_id, scientist.s_name from scientist, prove where prove.person_id = scientist.person_id and prove.theorem_id = """
   s += name
   #s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -476,14 +475,14 @@ def theorem2axiom():
   s = """select axiom_name from premise where theorem_id = """
   s += name
   #s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -495,14 +494,14 @@ def theoremContent():
   s = """select theorem_content from theorem where theorem_id = """
   s += name
   #s += """'"""
-  print s
+  # print s
   cursor = g.conn.execute(s)
 
   names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-  print names
+  # print names
 
   context = dict(data=names)
 
@@ -747,7 +746,7 @@ if __name__ == "__main__":
   @click.option('--debug', is_flag=True)
   @click.option('--threaded', is_flag=True)
   @click.argument('HOST', default='0.0.0.0')
-  @click.argument('PORT', default=8080, type=int)
+  @click.argument('PORT', default=8111, type=int)
   def run(debug, threaded, host, port):
     """
     This function handles command line parameters.
