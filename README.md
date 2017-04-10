@@ -10,11 +10,17 @@
   keyword with respect to specific entity, and related information will be shown, by searching on
   those related information, the network will get extended.
   
+  Concretely, we showed all the information according to an entity at the top of each entity page, 
+  and we provide method to search through a relationship according to that entity. If the search 
+  result is not empty, we will jump to the new entity page and user can search further. Honestly, 
+  user can get any information from database with suitable queries or some combination of queries.
+  
   New Feature:
   
-  User can insert new information(course and their relationships) into the Knowledge Graph.
-  When encoutering wrong input or there is no matching information in database, an corresponding 
-  error message will show on the webpage.
+  - User can insert new information(course and their relationships) into the Knowledge Graph.
+  - We also provided three complicated example which has real world meaning. When encoutering wro
+  ng input or there is no matching information in database, an corresponding error message will sh
+  ow on the webpage. 
 
 
 - Interesting Operations:
