@@ -1,10 +1,6 @@
 <html>
   <style>
-<<<<<<< HEAD
     body{ 
-=======
-    body{
->>>>>>> 78887db5b0a872922c43f8af5286c517a027e513
       font-size: 15pt;
       font-family: arial;
     }
@@ -23,53 +19,36 @@
 
 <!-- <p><a href="another">Go to the other page</a></p> -->
 <p> What do you want to know about Course? </p>
-<<<<<<< HEAD
-<form method="POST" action="/search5">
-<p>Knowledge Covered by Course(Such as Abstract Algebra): <input type="text" name="name"><input type="submit" value="search"></p>
-</form>
-
-<form method="POST" action="/search6">
-<p>Prerequisite of Course: <input type="text" name="name"><input type="submit" value="search"></p>
-</form>
-
-<form method="POST" action="/search7">
-<p>Reference About Course: <input type="text" name="name"><input type="submit" value="search"></p>
-</form>
-
-</body>
 
 
-</html>
-=======
 <form method="POST" action="/course2knowledge">
-<p>Knowledge Covered by Course(Such as Abstract Algebra): <input type="text" name="name"><input type="submit" value="search"></p>
+<p>Knowledge Covered by Course(Such as 132301): <input type="text" name="name"><input type="submit" value="search"></p>
 </form>
 
 <form method="POST" action="/course2course">
-<p>Prerequisite of Course: <input type="text" name="name"><input type="submit" value="search"></p>
+<p>Prerequisite of Course(Such as 132302): <input type="text" name="name"><input type="submit" value="search"></p>
 </form>
 
 <form method="POST" action="/course2reference">
-<p>Reference About Course: <input type="text" name="name"><input type="submit" value="search"></p>
+<p>Reference About Course(Such as 132301): <input type="text" name="name"><input type="submit" value="search"></p>
 </form>
 
 <h3>insert course</h3>
 <form method="POST" action="/insert_course">
-    <p>Course id: <input type="text" name="c_id"> (ex. 1)</p>
-    <p>Course name: <input type="text" name="c_name"></p>
-    <p>Under Knowledge name: <input type="text" name="k_name"></p>
+    <p>Course id(form: 100000): <input type="text" name="c_id"> </p>
+    <p>Course name(form: gauge theory): <input type="text" name="c_name"></p>
+    <p>Under Knowledge name(form: geometry): <input type="text" name="k_name"></p>
     <input type="submit" value="add">
 </form>
 
-  <h3>insert prerequisite</h3>
+<h3>insert prerequisite</h3>
 <form method="POST" action="/insert_prerequisite">
-    <p>Prerequisite id: <input type="text" name="c_id_pre"> (ex. 1)</p>
-    <p>Post Course id: <input type="text" name="c_id_post"></p>
+    <p>Prerequisite id(form: 100000): <input type="text" name="c_id_pre"> </p>
+    <p>Post Course id(form: 100001): <input type="text" name="c_id_post"></p>
     <input type="submit" value="add">
 </form>
-
+<p><a href="/">Back to the main page</a></p>
 </body>
 
 
 </html>
->>>>>>> 78887db5b0a872922c43f8af5286c517a027e513
