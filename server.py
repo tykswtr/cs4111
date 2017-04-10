@@ -16,6 +16,7 @@ Read about it online.
 
 import os
 from sqlalchemy import *
+from sqlalchemy import exc
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 from jinja2 import Template
@@ -283,57 +284,95 @@ def course2knowledge():
   name = request.form['name']
   s = """select k_name from cover where cover.course_id = """
   s += name
-  # s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "course"
+  turn_p = "knowledge"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from course"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("knowledge.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/course2course', methods = ['GET', 'POST'])
 def course2course():
   name = request.form['name']
   s = """select prerequisite.course_id_pre, course.c_name from prerequisite, course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
   s += name
-  # s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "course"
+  turn_p = "course_2"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from course"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
+  page = origin_p
   context = dict(data=names)
-
-  return render_template("course.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/course2reference', methods = ['GET', 'POST'])
 def course2reference():
   name = request.form['name']
-  s = """select about.link_id,link.link_name from about, link where about.linke_id = link.link_id and about.course_id = """
+  s = """select about.link_id, reference.link_name from about, reference where about.link_id = reference.link_id and about.course_id = """
   s += name
-  # s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
+  origin_p = "course"
+  turn_p = "reference"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from course"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("reference.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/knowledge2event', methods = ['GET', 'POST'])
 def knowledge2event():
@@ -341,18 +380,31 @@ def knowledge2event():
   s = """select relateto.event_id, event.event_name from event, relateto where relateto.event_id = event.event_id and relateto.k_name ='"""
   s += name
   s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "knowledge"
+  turn_p = "event"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from knowledge"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("event.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/knowledge2theorem', methods = ['GET', 'POST'])
 def knowledge2theorem():
@@ -360,37 +412,63 @@ def knowledge2theorem():
   s = """select theorem_id, theorem_name from theorem where k_name ='"""
   s += name
   s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "knowledge"
+  turn_p = "theorem"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from knowledge"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("theorem.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/knowledge2course', methods = ['GET', 'POST'])
 def knowledge2course():
   name = request.form['name']
-  s = """select cover.course_id, course.c_name where cover.course_id =course.course_id and cover.k_name = '"""
+  s = """select cover.course_id, course.c_name from cover, course where cover.course_id =course.course_id and cover.k_name = '"""
   s += name
   s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "knowledge"
+  turn_p = "course"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from knowledge"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("course.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/knowledge2knowledge', methods = ['GET', 'POST'])
 def knowledge2knowledge():
@@ -398,130 +476,221 @@ def knowledge2knowledge():
   s = """select knowledge_sub from subordinate where knowledge_sup ='"""
   s += name
   s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "knowledge"
+  turn_p = "knowledge_2"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from knowledge"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("knowledge.html", **context)
+  page = origin_p
+  return render_template(page + ".html", **context)
 
 
 @app.route('/reference2course', methods = ['GET', 'POST'])
 def reference2course():
   name = request.form['name']
-  s = """select about.couse_id, course.c_name from about where about.course_id =course.course_id and about.link_id = """
+  s = """select about.course_id, course.c_name from about, course where about.course_id =course.course_id and about.link_id = """
   s += name
-  #s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "reference"
+  turn_p = "course"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from reference"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("course.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/theorem2knowledge', methods = ['GET', 'POST'])
 def theorem2knowledge():
   name = request.form['name']
   s = """select k_name from theorem where theorem_id = """
   s += name
-  #s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "theorem"
+  turn_p = "knowledge"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from theorem"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("knowledge.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/theorem2scientist', methods = ['GET', 'POST'])
 def theorem2scientist():
   name = request.form['name']
   s = """select prove.person_id, scientist.s_name from scientist, prove where prove.person_id = scientist.person_id and prove.theorem_id = """
   s += name
-  #s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "theorem"
+  turn_p = "scientist"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from theorem"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("scientist.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/theorem2axiom', methods = ['GET', 'POST'])
 def theorem2axiom():
   name = request.form['name']
   s = """select axiom_name from premise where theorem_id = """
   s += name
-  #s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "theorem"
+  turn_p = "axiom"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from theorem"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("axiom.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/theoremContent', methods = ['GET', 'POST'])
 def theoremContent():
   name = request.form['name']
   s = """select theorem_content from theorem where theorem_id = """
   s += name
-  #s += """'"""
-  # print s
-  cursor = g.conn.execute(s)
+  origin_p = "theorem"
+  turn_p = "theorem"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-  # print names
-
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from theorem"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-
-  return render_template("theorem.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/event2scientist', methods=['POST'])
 def event2scientist():
   name = request.form['name']
   s = """select scientist.person_id, scientist.s_name from scientist, regardto, event where regardto.person_id = scientist.person_id and
-          regardto.event_id = event.event_id and s_name = '"""
+          regardto.event_id = event.event_id and event.event_id = """
   s += name
-  s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
 
+  origin_p = "event"
+  turn_p = "scientist"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from event"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("scientist.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/event2knowledge', methods=['POST'])
 def event2knowledge():
@@ -529,15 +698,31 @@ def event2knowledge():
   s = """select knowledge from knowledge, relateto where relateto.k_name = knowledge.k_name and
           relateto.event_id = """
   s += name
-  # s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  origin_p = "event"
+  turn_p = "knowledge"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from event"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("knowledge.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/scientist2event', methods=['POST'])
 def scientist2event():
@@ -545,15 +730,31 @@ def scientist2event():
   s = """select regardto.event_id, event.event_name from regardto, event where regardto.event_id = event.event_id and
           regardto.person_id= """
   s += name
-  # s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  origin_p = "scientist"
+  turn_p = "event"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from scientist"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("event.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/scientist2theorem', methods=['POST'])
 def scientist2theorem():
@@ -561,30 +762,62 @@ def scientist2theorem():
   s = """select prove.theorem_id, theorem.theorem_name from prove, theorem where prove.theorem_id = theorem.theorem_id and
           prove.person_id= """
   s += name
-  # s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  origin_p = "scientist"
+  turn_p = "theorem"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from scientist"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("theorem.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/scientist2axiom', methods=['POST'])
 def scientist2axiom():
   name = request.form['name']
   s = """select axiom_name from propose where propose.person_id= """
   s += name
-  # s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  origin_p = "scientist"
+  turn_p = "axiom"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from scientist"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("axiom.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/axiom2theorem', methods=['POST'])
 def axiom2theorem():
@@ -593,14 +826,31 @@ def axiom2theorem():
           premise.axiom_name= '"""
   s += name
   s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  origin_p = "axiom"
+  turn_p = "theorem"
+  page = origin_p
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = turn_p
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == origin_p:
+    s = """select * from axiom"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("theorem.html", **context)
+  return render_template(page + ".html", **context)
 
 @app.route('/axiom2scientist', methods=['POST'])
 def axiom2scientist():
@@ -609,14 +859,29 @@ def axiom2scientist():
           propose.axiom_name= '"""
   s += name
   s += """'"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  page = "axiom"
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
 
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+    else:
+      page = "scientist"
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
+  if page == "axiom":
+    s = """select * from axiom"""
+    cursor = g.conn.execute(s)
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
   context = dict(data=names)
-  return render_template("scientist.html", **context)
+  return render_template(page + ".html", **context)
 
 # Example of adding new data to the database
 @app.route('/interesting_example')
@@ -643,11 +908,17 @@ def example1():
                                 course c5, course c6, prerequisite p4 where p4.course_id_pre = c5.course_id and
                                 p4.course_id_post = c6.course_id and c5.course_id not in (select c4.course_id from
                                 course c4, prerequisite p3 where c4.course_id = p3.course_id_post))"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
   context = dict(data=names)
   return render_template("example1.html", **context)
 
@@ -659,11 +930,17 @@ def example2():
           and nationality in (select nationality from scientist where date_of_birth > '1800-01-01 00:00:00'
           group by nationality having count(*) = (select max(cnt) from (select count(*) as cnt from scientist
           where date_of_birth > '1800-01-01 00:00:00' group by nationality) S))"""
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
   context = dict(data=names)
   return render_template("example2.html", **context)
 
@@ -676,12 +953,17 @@ def example3():
         about, cover where about.course_id = course.course_id and about.link_id = reference.link_id
         and cover.course_id = course.course_id and cover.k_name = theorem.k_name and theorem.theorem_id = """
   s += name
-  cursor = g.conn.execute(s)
-  names = []
-  for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
-  cursor.close()
-
+  try:
+    cursor = g.conn.execute(s)
+    names = []
+    for result in cursor:
+      names.append(result)  # can also be accessed using result[0]
+    cursor.close()
+    if not names:
+        names.append("There is no such information in the database, please try again")
+  except exc.SQLAlchemyError:
+    names = []
+    names.append("There is a syntax error in your input, please try again")
   context = dict(data=names)
   return render_template("example3.html", **context)
 
@@ -691,26 +973,32 @@ def insert_course():
   c_id = request.form['c_id']
   c_name = request.form['c_name']
   k_name = request.form['k_name']
-
+  names = []
   s = """INSERT INTO course (course_id, c_name)  VALUES("""
   s += c_id
   s += """, '"""
   s += c_name
   s += """')"""
-  g.conn.execute(s)
+  try:
+    cursor = g.conn.execute(s)
+    names.append("successively insert course")
+  except exc.SQLAlchemyError:
+    names.append("failed to insert course")
   s = """INSERT INTO cover (k_name, course_id) VALUES('"""
   s += k_name
   s += """', """
   s += c_id
   s += """)"""
-  g.conn.execute(s)
+  try:
+    cursor = g.conn.execute(s)
+    names.append("successively insert cover information")
+  except exc.SQLAlchemyError:
+    names.append("failed to insert cover information")
   s = """select * from course"""
   cursor = g.conn.execute(s)
-  names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
-
   context = dict(data=names)
   return render_template("course.html", **context)
 
@@ -723,7 +1011,12 @@ def insert_prerequisite():
   s += """, """
   s += c_id_post
   s += """)"""
-  g.conn.execute(s)
+  names = []
+  try:
+    cursor = g.conn.execute(s)
+    names.append("successively insert prerequisite information")
+  except exc.SQLAlchemyError:
+    names.append("failed to insert prerequisite information")
   s = """select prerequisite.course_id_pre, course.c_name from prerequisite,
         course where prerequisite.course_id_pre = course.course_id and prerequisite.course_id_post = """
   s += c_id_post
@@ -731,7 +1024,6 @@ def insert_prerequisite():
   cursor = g.conn.execute(s)
   s = """select * from prerequisite"""
   cursor = g.conn.execute(s)
-  names = []
   for result in cursor:
     names.append(result)  # can also be accessed using result[0]
   cursor.close()
@@ -761,7 +1053,6 @@ if __name__ == "__main__":
     """
 
     HOST, PORT = host, port
-    print "running on %s:%d" % (HOST, PORT)
     app.run(host=HOST, port=PORT, debug=debug, threaded=threaded)
 
 

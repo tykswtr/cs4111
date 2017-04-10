@@ -1,0 +1,23 @@
+
+  <h1>Axiom</h1>
+  <!-- <div>{{data}}</div> -->
+
+  <div>
+    {% for n in data %}
+    <div>{{n}}</div>
+    {% endfor %}
+  </div>
+
+<!-- <p><a href="another">Go to the other page</a></p> -->
+<p> What do you want to know about Axiom? </p>
+
+
+<form method="POST" action="/axiom2scientist">
+<p>Scientist proposed the axiom(Such as Euclidean geometry): <input type="text" name="name"><input type="submit" value="search"></p>
+</form>
+
+<form method="POST" action="/axiom2theorem">
+<p>Theorem built based on axiom(Such as Zermelo–Fraenkel set theory): <input type="text" name="name"><input type="submit" value="search"></p>
+</form>
+
+<p><a href="/">Back to the main page</a></p>
