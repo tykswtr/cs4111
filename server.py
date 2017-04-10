@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python2.7
 
 """
@@ -20,6 +21,10 @@ from sqlalchemy import exc
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 from jinja2 import Template
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -172,7 +177,8 @@ def course():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -189,7 +195,8 @@ def knowledge():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -206,7 +213,8 @@ def reference():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -220,7 +228,8 @@ def event():
   cursor = g.conn.execute(s)
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
 
   context = dict(data=names)
@@ -235,7 +244,8 @@ def scientist():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -252,7 +262,8 @@ def theorem():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -270,7 +281,8 @@ def axiom():
 
   names = []
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    # #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   # print names
 
@@ -291,7 +303,8 @@ def course2knowledge():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -300,12 +313,13 @@ def course2knowledge():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from course"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -322,7 +336,8 @@ def course2course():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -331,12 +346,13 @@ def course2course():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from course"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   page = origin_p
   context = dict(data=names)
@@ -355,7 +371,8 @@ def course2reference():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -364,12 +381,13 @@ def course2reference():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from course"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -387,7 +405,8 @@ def knowledge2event():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -396,12 +415,13 @@ def knowledge2event():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from knowledge"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -419,7 +439,8 @@ def knowledge2theorem():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -428,12 +449,13 @@ def knowledge2theorem():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from knowledge"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -451,7 +473,8 @@ def knowledge2course():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -460,12 +483,13 @@ def knowledge2course():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from knowledge"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -483,7 +507,8 @@ def knowledge2knowledge():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -492,12 +517,13 @@ def knowledge2knowledge():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from knowledge"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   page = origin_p
@@ -516,7 +542,8 @@ def reference2course():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -525,12 +552,13 @@ def reference2course():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from reference"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -547,7 +575,8 @@ def theorem2knowledge():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      # #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -556,12 +585,13 @@ def theorem2knowledge():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from theorem"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -578,7 +608,8 @@ def theorem2scientist():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -587,12 +618,13 @@ def theorem2scientist():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from theorem"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -609,7 +641,8 @@ def theorem2axiom():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -618,12 +651,13 @@ def theorem2axiom():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from theorem"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -640,7 +674,8 @@ def theoremContent():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -649,12 +684,13 @@ def theoremContent():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from theorem"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -673,7 +709,8 @@ def event2scientist():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -682,12 +719,13 @@ def event2scientist():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from event"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -705,7 +743,8 @@ def event2knowledge():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -714,12 +753,13 @@ def event2knowledge():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from event"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -737,7 +777,8 @@ def scientist2event():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -746,12 +787,13 @@ def scientist2event():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from scientist"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -769,7 +811,8 @@ def scientist2theorem():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -778,12 +821,13 @@ def scientist2theorem():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from scientist"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -800,7 +844,8 @@ def scientist2axiom():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -809,12 +854,13 @@ def scientist2axiom():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from scientist"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -833,7 +879,8 @@ def axiom2theorem():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -842,12 +889,13 @@ def axiom2theorem():
       page = turn_p
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == origin_p:
     s = """select * from axiom"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -864,7 +912,8 @@ def axiom2scientist():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
 
     cursor.close()
     if not names:
@@ -873,12 +922,13 @@ def axiom2scientist():
       page = "scientist"
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   if page == "axiom":
     s = """select * from axiom"""
     cursor = g.conn.execute(s)
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
   context = dict(data=names)
   return render_template(page + ".html", **context)
@@ -912,13 +962,14 @@ def example1():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
     if not names:
         names.append("There is no such information in the database, please try again")
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   context = dict(data=names)
   return render_template("example1.html", **context)
 
@@ -934,13 +985,14 @@ def example2():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
     if not names:
         names.append("There is no such information in the database, please try again")
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   context = dict(data=names)
   return render_template("example2.html", **context)
 
@@ -957,13 +1009,14 @@ def example3():
     cursor = g.conn.execute(s)
     names = []
     for result in cursor:
-      names.append(result)  # can also be accessed using result[0]
+      #result = [str(r) for r in result]
+      names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
     cursor.close()
     if not names:
         names.append("There is no such information in the database, please try again")
   except exc.SQLAlchemyError:
     names = []
-    names.append("There is a syntax error in your input, please try again")
+    names.append("==========There is a syntax error in your input, please try again==========")
   context = dict(data=names)
   return render_template("example3.html", **context)
 
@@ -997,7 +1050,8 @@ def insert_course():
   s = """select * from course"""
   cursor = g.conn.execute(s)
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
   context = dict(data=names)
   return render_template("course.html", **context)
@@ -1025,7 +1079,8 @@ def insert_prerequisite():
   s = """select * from prerequisite"""
   cursor = g.conn.execute(s)
   for result in cursor:
-    names.append(result)  # can also be accessed using result[0]
+    #result = [str(r) for r in result]
+    names.append(', '.join(str(r) for r in result))  # can also be accessed using result[0]
   cursor.close()
 
   context = dict(data=names)
