@@ -20,7 +20,21 @@
 - Interesting Operations:
  
   1. Interesting Queries
-  inputs on the page are used in such and such way to produce database operations that do such and such
-  There is a example page containing 3 examples, users can input according to hints and get 
+  There is a example page containing 3 interesting examples. In example 1 and example 3, users can 
+  input according to hints. For all these three queries database will do corresponding complex que
+  ries and show interesting results. 
+  
+  The page is interesting because firstly the query is a complecated query. However, we do not nee
+  d to deal with this complexity during coding in python, but simply pass a long string into the 
+  database query. Secondly, these three examples have real world understanding and usage. They are 
+  queries usefull to user and are meaningful to be answered. 
+  
+  2. Course Page
+  In course page, we have three queries about knowledge, prerequisite and reference according to a 
+  specific course. We can also insert new courses and new prerequisite into the database. 
+  
+  This page is interesting because it covers most interesting operations according to course. When 
+  we add a new course, we also need the course to have a specific knowledge it covered. We will re
+  turn information of either one or both of them are successful. 
   
 
